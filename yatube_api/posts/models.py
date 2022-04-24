@@ -49,17 +49,17 @@ class Follow(models.Model):
     """Подписки на авторов постов."""
     user = models.ForeignKey(
         User,
+        related_name='follower',
         on_delete=models.CASCADE,
         blank=True,
         null=True,
         verbose_name='Подписчик',
-        related_name='follower',
     )
     author = models.ForeignKey(
         User,
+        related_name='following',
         on_delete=models.CASCADE,
         blank=True,
         null=True,
         verbose_name='Автор поста',
-        related_name='following',
     )

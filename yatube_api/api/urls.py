@@ -7,11 +7,17 @@ from api.views import PostView, GroupView, CommentView, FollowViews
 
 router = routers.DefaultRouter()
 
-router.register('v1/posts', PostView, basename='post')
-router.register('v1/groups',GroupView, basename='group')
-router.register('v1/comments', CommentView, basename='comment')
-router.register('v1/follows', FollowViews, basename='follow')
+router.register('posts', PostView, basename='post')
+router.register('groups',GroupView, basename='group')
+#router.register('follow', FollowViews, basename='follow')
+router.register(r'^posts/(?P<post_id>\d+)/comments', CommentView, basename='comment')
+
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('v1/', include(router.urls)),
+    #path('v1/groups/<int:pk>/', GroupView.as_view(), name='group'),
+    #path('v1/groups/', GroupsView.as_view(), name='group'),
+    path('v1/follow/', FollowViews.as_view(), name='follow'),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
 ]
