@@ -1,3 +1,4 @@
+from operator import mod
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
@@ -30,11 +31,11 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    #user = serializers.SlugRelatedField(
-    #    slug_field='username', read_only=True, many=True)
-    #author = serializers.SlugRelatedField(
-    #    slug_field='username', read_only=True, many=True)
+    user = serializers.SlugRelatedField(
+        slug_field='username', read_only=True)
+    following = serializers.SlugRelatedField(
+        slug_field='username', read_only=True)
 
     class Meta:
         model = Follow
-        fields = '__all__'
+        fields = ('user', 'following')
