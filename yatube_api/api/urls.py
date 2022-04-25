@@ -1,12 +1,7 @@
-from xml.etree.ElementInclude import include
 from django.urls import include, path
 from rest_framework import routers
 
-from api.views import PostViewSet, GroupViewSet, CommentViewSet, FollowView
-
-
-
-
+from api.views import CommentViewSet, FollowView, GroupViewSet, PostViewSet
 
 router = routers.DefaultRouter()
 

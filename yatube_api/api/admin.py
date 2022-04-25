@@ -1,6 +1,6 @@
 from django.contrib import admin
-
 from posts.models import Follow
+
 
 class FollowAdmin(admin.ModelAdmin):
     list_display = ("pk", "user", "following")
