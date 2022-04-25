@@ -2,7 +2,7 @@ from xml.etree.ElementInclude import include
 from django.urls import include, path
 from rest_framework import routers
 
-from api.views import PostView, GroupView, CommentView, FollowViews
+from api.views import PostViewSet, GroupViewSet, CommentViewSet, FollowView
 
 
 
@@ -10,18 +10,15 @@ from api.views import PostView, GroupView, CommentView, FollowViews
 
 router = routers.DefaultRouter()
 
-router.register('posts', PostView, basename='post')
-router.register('groups',GroupView, basename='group')
-#router.register('follow', FollowViews, basename='follow')
-router.register(r'^posts/(?P<post_id>\d+)/comments', CommentView, basename='comment')
+router.register('posts', PostViewSet, basename='post')
+router.register('groups',GroupViewSet, basename='group')
+router.register(
+    r'^posts/(?P<post_id>\d+)/comments', CommentViewSet, basename='comment')
 
 
 urlpatterns = [
-    path('v1/follow/', FollowViews.as_view(), name='follow'),
+    path('v1/follow/', FollowView.as_view(), name='follow'),
     path('v1/', include(router.urls)),
-    #path('v1/groups/<int:pk>/', GroupView.as_view(), name='group'),
-    #path('v1/groups/', GroupsView.as_view(), name='group'),
-    
     path('v1/', include('djoser.urls')),
     path('v1/', include('djoser.urls.jwt')),
 ]

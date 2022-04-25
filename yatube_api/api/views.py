@@ -1,8 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from requests import request
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, serializers, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -11,7 +8,7 @@ from api.serializers import PostSerializer, GroupSerializer, CommentSerializer, 
 from posts.models import Post, Group, Comment, Follow, User
 
 
-class PostView(viewsets.ModelViewSet):
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthorPermission,)
@@ -21,18 +18,12 @@ class PostView(viewsets.ModelViewSet):
         return serializer.save(author=self.request.user)
 
 
-#class GroupsView(generics.ListAPIView):
-#    queryset = Group.objects.all()
-#    serializer_class = GroupSerializer
-
-
-class GroupView(viewsets.ReadOnlyModelViewSet):
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
-class CommentView(viewsets.ModelViewSet):
-    #queryset = Comment.objects.all()
+class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorPermission,)
 
@@ -45,23 +36,19 @@ class CommentView(viewsets.ModelViewSet):
         return serializer.save(author=self.request.user)
 
 
-class FollowViews(generics.ListCreateAPIView):
-    #queryset = Follow.objects.all()
+class FollowView(generics.ListCreateAPIView):
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.SearchFilter,) # DjangoFilterBackend)
-    # filterset_fields = ('following',)
-    search_fields = ('user__username',)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('following__username',)
 
     def get_queryset(self):
-        following = self.request.user.id
-        print(self.request.user.id)
-        print(Follow.objects.filter(following=following))
-        
-        return Follow.objects.filter(following=following)
+        user = self.request.user
+        return Follow.objects.filter(user=user)
 
     def perform_create(self, serializer):
-        print(serializer.instance)
-        print(serializer.validated_data.get('following').id)
-        print(self.request.user.id)
+        if serializer.validated_data.get('following') == self.request.user:
+            raise serializers.ValidationError(
+                {"detail": "Подписка на самого себя невозможна"}
+            )
         return serializer.save(user=self.request.user)

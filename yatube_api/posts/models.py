@@ -63,5 +63,3 @@ class Follow(models.Model):
         null=True,
         verbose_name='Автор поста',
     )
-
-    
