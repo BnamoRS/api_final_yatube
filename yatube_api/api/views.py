@@ -45,7 +45,7 @@ class CommentView(viewsets.ModelViewSet):
         return serializer.save(author=self.request.user)
 
 
-class FollowViews(generics.ListAPIView):
+class FollowViews(generics.ListCreateAPIView):
     #queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
@@ -54,10 +54,14 @@ class FollowViews(generics.ListAPIView):
     search_fields = ('user__username',)
 
     def get_queryset(self):
-        user = self.request.user.id
-    #    print(self.request.user.id)
-    #    print(Follow.objects.filter(following=self.request.user))
-        return Follow.objects.filter(following=user)
+        following = self.request.user.id
+        print(self.request.user.id)
+        print(Follow.objects.filter(following=following))
+        
+        return Follow.objects.filter(following=following)
 
     def perform_create(self, serializer):
-       return serializer.save(user=self.request.user)
+        print(serializer.instance)
+        print(serializer.validated_data.get('following').id)
+        print(self.request.user.id)
+        return serializer.save(user=self.request.user)

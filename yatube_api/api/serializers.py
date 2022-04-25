@@ -2,7 +2,7 @@ from operator import mod
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
-from posts.models import Comment, Post, Group, Follow
+from posts.models import Comment, Post, Group, Follow, User
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -31,10 +31,10 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(
-        slug_field='username', read_only=True)
+    user = serializers.StringRelatedField(
+        )
     following = serializers.SlugRelatedField(
-        slug_field='username', read_only=True)
+        queryset=User.objects.all(), slug_field='username')
 
     class Meta:
         model = Follow
