@@ -6,4 +6,5 @@ class FollowAdmin(admin.ModelAdmin):
     list_display = ("pk", "user", "following")
     search_fields = ("user", "following")
 
+
 admin.site.register(Follow, FollowAdmin)
