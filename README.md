@@ -75,7 +75,7 @@ pip install -r requirements.txt
     "password": "resuresu"
 }'
 ```
-### ответ:
+**ответ:**
 ```
 {
     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY1MTA4MTEyNiwianRpIjoiNzRiN2FiMDI1NjcwNGNhN2IwOTI3M2YyNzNkYWJiZTgiLCJ1c2VyX2lkIjo0fQ.S6eLuuoRWhozcJr182MmGm6WtnLDY4MzEG_FmpXY7pY",
@@ -89,7 +89,7 @@ pip install -r requirements.txt
 --header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUxMzI2MzI2LCJqdGkiOiJmMzYwODNhMTE0NzA0NDM2YTBiZWE2NTgyZTkxNzI1YiIsInVzZXJfaWQiOjF9.T2IecG2O2XBQmCPUMeZ2UsVJ8IYuoZmC1vbM4qBrHVk' \
 --data-raw ''
 ```
-### ответ:
+**ответ:**
 ```
 [
     {
@@ -120,7 +120,7 @@ pip install -r requirements.txt
     "text": "test post"
 }'
 ```
-### ответ:
+**ответ:**
 ```
 {
     "id": 6,
@@ -142,7 +142,7 @@ curl --location --request POST 'http://127.0.0.1:8000/api/v1/follow/' \
    "following": "resu"
 }
 ```
-### ответ:
+**ответ:**
 ```
 {
     "non_field_errors": [
@@ -161,7 +161,7 @@ curl --location --request POST 'http://127.0.0.1:8000/api/v1/posts/6/comments/' 
     "post": "6"
 }'
 ```
-### ответ:
+**ответ:**
 ```
 {
     "id": 2,
