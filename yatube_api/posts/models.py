@@ -31,7 +31,7 @@ class Post(models.Model):
     )
 
     def __str__(self):
-        return self.text
+        return f'Author:{self.author}, text:{self.text[:15]}'
 
 
 class Comment(models.Model):
@@ -63,3 +63,11 @@ class Follow(models.Model):
         null=True,
         verbose_name='Автор поста',
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='unique_follow',
+            )
+        ]
