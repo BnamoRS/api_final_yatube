@@ -35,14 +35,21 @@ class CommentViewSet(viewsets.ModelViewSet):
         post = get_object_or_404(Post, id=post_id)
         return post.comments.all()
 
+    def get_object(self):
+        post_id = self.kwargs.get('post_id')
+        comment_id = self.kwargs.get('pk')
+        post = get_object_or_404(Post, id=post_id)
+        return get_object_or_404(Comment, post=post, id=comment_id)
+
     def create(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
-        #self.check_object_permissions(self.request, post)
+        self.check_object_permissions(self.request, post)
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(author=request.user, post=post)
-            return Response(serializer.validated_data)
-        return Response(serializer.errors)
+            return Response(
+                serializer.validated_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, post_id, pk, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -59,9 +66,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     def destroy(self, request, post_id, pk):
         post = get_object_or_404(Post, id=post_id)
         comment = get_object_or_404(Comment, post=post, id=pk)
-        self.check_object_permissions(request, comment)
+        #self.check_object_permissions(request, comment)
         comment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        return Response(
+            status=status.HTTP_204_NO_CONTENT)
 
 
 class FollowViewSet(mixins.CreateModelMixin,
