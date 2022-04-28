@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import filters, mixins, serializers, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -36,6 +37,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
+        #self.check_object_permissions(self.request, post)
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(author=request.user, post=post)
@@ -45,13 +47,21 @@ class CommentViewSet(viewsets.ModelViewSet):
     def update(self, request, post_id, pk, **kwargs):
         partial = kwargs.pop('partial', False)
         post = get_object_or_404(Post, id=post_id)
-        comment = get_object_or_404(Comment, id=pk)
+        comment = get_object_or_404(Comment, post=post, id=pk)
+        self.check_object_permissions(request, comment)
         serializer = CommentSerializer(
             comment, data=request.data, partial=partial)
         if serializer.is_valid():
             serializer.save(author=request.user, post=post)
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def destroy(self, request, post_id, pk):
+        post = get_object_or_404(Post, id=post_id)
+        comment = get_object_or_404(Comment, post=post, id=pk)
+        self.check_object_permissions(request, comment)
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FollowViewSet(mixins.CreateModelMixin,
