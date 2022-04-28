@@ -1,20 +1,21 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import filters, mixins, serializers, viewsets
+from rest_framework import filters, mixins, permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
-from posts.models import Comment, Follow, Group, Post, User
+from posts.models import Group, Post, User
+
 from .permissions import IsAuthorObjectPermission
-from .serializers import (
-    CommentSerializer, FollowSerializer, GroupSerializer, PostSerializer)
+from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
+                          PostSerializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorObjectPermission)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsAuthorObjectPermission
+    )
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
@@ -28,8 +29,11 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorObjectPermission, IsAuthenticatedOrReadOnly,)
-    
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsAuthorObjectPermission,
+    )
+
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, id=post_id)
@@ -39,8 +43,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         post_id = self.kwargs.get('post_id')
         comment_id = self.kwargs.get('pk')
-        print(post_id)
-        print(comment_id)
         post = get_object_or_404(Post, id=post_id)
         comment = get_object_or_404(queryset, post=post, id=comment_id)
         self.check_object_permissions(self.request, comment)
@@ -64,7 +66,7 @@ class FollowViewSet(mixins.CreateModelMixin,
                     mixins.ListModelMixin,
                     viewsets.GenericViewSet):
     serializer_class = FollowSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username',)
 

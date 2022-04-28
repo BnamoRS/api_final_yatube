@@ -18,7 +18,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only=True, slug_field='username'
     )
     post = serializers.PrimaryKeyRelatedField(read_only=True)
-    
+
     class Meta:
         fields = '__all__'
         model = Comment
