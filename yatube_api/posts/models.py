@@ -31,10 +31,10 @@ class Post(models.Model):
     )
 
     class Meta:
-        ordering = ("pub_date",)
+        ordering = ('pub_date',)
 
     def __str__(self):
-        return f'Author:{self.author}, text:{self.text[:15]}'
+        return f'Author:{self.author.username}, text:{self.text[:15]}'
 
 
 class Comment(models.Model):
